@@ -14,9 +14,15 @@ def get_input():
     return letters
 
 # *****************************************************************************
+def word_key(word):
+    """Convert a word to a dictionary key."""
+    key = ''.join(sorted(word))
+    return key
+
+# *****************************************************************************
 def load_words():
     """
-    Load scrabble dictionary and create anagrams dict with
+    Load scrabble dictionary and create a dict anagram_tbl with
     key= sorted letters, value= list of anagrams
     Example:
         {
@@ -31,22 +37,35 @@ def load_words():
     
     # Create a python dict keyed by sorted letters, with value equal to a list
     # of all the anagrams of that collection of letters
-    anagrams = dict()
+    anagram_tbl = dict()
     for word in words:
-        pass
+        word_lc = word.rstrip().lower()
+        key = word_key(word_lc)
+        value = anagram_tbl.get(key, []) + [word_lc]
+        anagram_tbl[key] = value
+    return anagram_tbl
+
+# *****************************************************************************
+def find_anagrams(anagram_tbl, word):
+    """Find all anagrams of a word."""
+    key = word_key(word)
+    anagrams = anagram_tbl.get(key, [])
     return anagrams
 
 # *****************************************************************************
 def main():
     """Console program."""
     # Load the anagrams dictionary
-    anagrams = load_words()
+    anagram_tbl = load_words()
     
     # Keep processing input from the user until they decide to quit
     while True:
         letters = get_input()
         if len(letters) > 0:
-            print(f'You chose:\n{letters}\n')
+            #print(f'You chose:\n{letters}\n')
+            anagrams = find_anagrams(anagram_tbl, letters)
+            print(f'Anagrams of {letters}:')
+            print(anagrams)
         else:
             quit_prompt = input('Quit? Enter to confirm.')
             if len(quit_prompt) == 0:
