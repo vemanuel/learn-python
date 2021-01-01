@@ -46,6 +46,24 @@ def load_words():
     return anagram_tbl
 
 # *****************************************************************************
+def load_defs():
+    """Load word definitions as a python dict."""
+    # Load word definitions
+    fname = 'word-definitions.txt'
+    with open(fname) as fh:
+        lines = fh.readlines()
+    
+    # Create dictionary keyed by lowercase word
+    def_tbl = dict()
+    for line in lines:
+        # split the dictionary line at the first space
+        word, word_def = line.split(sep=None, maxsplit=1)
+        # add this entry to the dictionary
+        word = word.lower()
+        def_tbl[word] = word_def.rstrip()
+    return def_tbl
+
+# *****************************************************************************
 def find_anagrams(anagram_tbl, word):
     """Find all anagrams of a word."""
     key = word_key(word)
@@ -57,15 +75,19 @@ def main():
     """Console program."""
     # Load the anagrams dictionary
     anagram_tbl = load_words()
-    
+    # Load the definitions of the words
+    def_tbl = load_defs()
     # Keep processing input from the user until they decide to quit
     while True:
         letters = get_input()
         if len(letters) > 0:
             #print(f'You chose:\n{letters}\n')
             anagrams = find_anagrams(anagram_tbl, letters)
-            print(f'Anagrams of {letters}:')
-            print(anagrams)
+            print(f'Anagrams of {letters.upper()}:')
+            for word in anagrams:
+                word_def = def_tbl[word]
+                print(f'{word.upper()}: {word_def}')
+            print()
         else:
             quit_prompt = input('Quit? Enter to confirm.')
             if len(quit_prompt) == 0:
